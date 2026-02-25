@@ -1,9 +1,20 @@
 <script setup>
 import { Chat } from "@ai-sdk/vue";
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 
 // 輸入框內容
 const input = ref("");
+
+// 當前使用的模型資訊
+const modelInfo = ref("");
+onMounted(async () => {
+  try {
+    const data = await $fetch("/api/model-info");
+    modelInfo.value = data.model;
+  } catch (e) {
+    modelInfo.value = "unknown";
+  }
+});
 
 // 初始化 Chat 實例，添加錯誤處理
 const chat = new Chat({
@@ -72,6 +83,9 @@ const handleSubmit = (e) => {
           DynaComware <span class="text-blue-600">AI</span>
         </h1>
         <p class="text-slate-500">2026 字體設計智能助手</p>
+        <p v-if="modelInfo" class="text-xs text-slate-400 mt-1 font-mono">
+          Model: {{ modelInfo }}
+        </p>
       </header>
 
       <!-- 對話記錄區域 -->
