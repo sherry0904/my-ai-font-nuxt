@@ -20,7 +20,10 @@ const chat = new Chat({
   },
 });
 
-const isLoading = computed(() => chat.status === "streaming");
+// submitted = 請求已送出等待回應, streaming = 正在串流接收
+const isLoading = computed(
+  () => chat.status === "submitted" || chat.status === "streaming",
+);
 const hasError = computed(() => chat.error !== undefined);
 
 // 自動滾動到底部
@@ -48,7 +51,10 @@ watch(
 watch(
   () => chat.status,
   (newStatus) => {
-    if (newStatus === "streaming") {
+    if (newStatus === "submitted") {
+      console.log("[前端] ⏳ 請求已送出，等待 AI 回應...");
+      scrollToBottom();
+    } else if (newStatus === "streaming") {
       console.log("[前端] 🚀 AI 開始回應...");
       scrollToBottom();
     } else if (newStatus === "ready" && chat.messages.length > 0) {
