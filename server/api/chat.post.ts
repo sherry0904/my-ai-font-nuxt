@@ -92,6 +92,7 @@ export default defineEventHandler(async (event) => {
 ## 重要規則
 - 要推薦字體時，請直接使用 show_font_card 工具，不要用文字描述工具呼叫
 - 回覆請使用純文字，不要包含 HTML / XML / JSON 標籤
+- 在工具呼叫後的文字說明中，直接寫出字體的真實名稱（例如「華康少女文字」），絕對不要使用 _FONT_NAME_、_FONT_DESCRIPTION_、{name}、{description} 等任何佔位符或模板變數
 
 ## 對話策略
 

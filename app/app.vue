@@ -249,6 +249,11 @@ const sendQuickPrompt = (prompt) => {
   z-index: -3;
   background:
     radial-gradient(
+      circle at 72% 82%,
+      rgba(233, 122, 95, 0.12),
+      transparent 34%
+    ),
+    radial-gradient(
       circle at 20% 10%,
       rgba(15, 118, 110, 0.1),
       transparent 36%
@@ -275,6 +280,7 @@ const sendQuickPrompt = (prompt) => {
   height: 240px;
   width: 240px;
   background: rgba(15, 118, 110, 0.28);
+  animation: drift-top 11s ease-in-out infinite;
 }
 
 .orb-bottom {
@@ -283,16 +289,17 @@ const sendQuickPrompt = (prompt) => {
   height: 280px;
   width: 280px;
   background: rgba(59, 130, 246, 0.2);
+  animation: drift-bottom 13s ease-in-out infinite;
 }
 
 .user-bubble {
   max-width: min(620px, 86vw);
   border-radius: 20px 20px 6px 20px;
-  background: linear-gradient(140deg, #0f766e 0%, #115e59 100%);
+  background: linear-gradient(138deg, #0f766e 0%, #136f68 64%, #1c8a7a 100%);
   padding: 10px 14px;
   color: #f8fafc;
   line-height: 1.55;
-  box-shadow: 0 18px 32px -22px rgba(15, 118, 110, 0.7);
+  box-shadow: 0 18px 32px -22px rgba(15, 118, 110, 0.62);
 }
 
 .assistant-bubble {
@@ -374,7 +381,7 @@ const sendQuickPrompt = (prompt) => {
   flex-shrink: 0;
   border: none;
   border-radius: 12px;
-  background: #0f172a;
+  background: linear-gradient(135deg, #0f172a 0%, #1d2840 100%);
   padding: 9px 12px;
   color: #f8fafc;
   font-size: 0.8rem;
@@ -383,7 +390,7 @@ const sendQuickPrompt = (prompt) => {
 }
 
 .composer-submit:hover:not(:disabled) {
-  background: #0f766e;
+  background: linear-gradient(135deg, #0f766e 0%, #e97a5f 100%);
 }
 
 .composer-submit:disabled {
@@ -402,8 +409,8 @@ const sendQuickPrompt = (prompt) => {
 }
 
 .quick-chip:hover:not(:disabled) {
-  border-color: rgba(15, 118, 110, 0.5);
-  color: #0f766e;
+  border-color: rgba(233, 122, 95, 0.55);
+  color: #c35e43;
   transform: translateY(-1px);
 }
 
@@ -420,7 +427,7 @@ const sendQuickPrompt = (prompt) => {
 .msg-enter-from,
 .msg-leave-to {
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(8px) scale(0.985);
 }
 
 @keyframes pulse-rise {
@@ -432,6 +439,26 @@ const sendQuickPrompt = (prompt) => {
   50% {
     transform: translateY(-3px);
     opacity: 1;
+  }
+}
+
+@keyframes drift-top {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-8px, 6px, 0);
+  }
+}
+
+@keyframes drift-bottom {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(9px, -7px, 0);
   }
 }
 
