@@ -1,6 +1,6 @@
 <script setup>
 import { Chat } from "@ai-sdk/vue";
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted, nextTick } from "vue";
 
 const input = ref("");
 
@@ -23,6 +23,13 @@ const chat = new Chat({
 const isLoading = computed(() => chat.status === "streaming");
 const hasError = computed(() => chat.error !== undefined);
 
+// 自動滾動到底部
+const scrollToBottom = () => {
+  nextTick(() => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  });
+};
+
 const quickPrompts = [
   "甜點店招牌設計",
   "活動海報標題字",
@@ -30,11 +37,20 @@ const quickPrompts = [
   "咖啡店菜單字體",
 ];
 
+// 串流期間持續滾動到底部（內容不斷增加時）
+watch(
+  () => chat.messages.length,
+  () => {
+    if (chat.status === "streaming") scrollToBottom();
+  },
+);
+
 watch(
   () => chat.status,
   (newStatus) => {
     if (newStatus === "streaming") {
       console.log("[前端] 🚀 AI 開始回應...");
+      scrollToBottom();
     } else if (newStatus === "ready" && chat.messages.length > 0) {
       console.log("[前端] ✅ AI 回應完成");
       const lastMsg = chat.messages[chat.messages.length - 1];
@@ -63,6 +79,7 @@ const handleSubmit = (e) => {
   console.log("[前端] 📤 發送:", message);
   chat.sendMessage({ text: message });
   input.value = "";
+  scrollToBottom();
 };
 
 const sendQuickPrompt = (prompt) => {
@@ -79,12 +96,21 @@ const sendQuickPrompt = (prompt) => {
 
     <main class="relative mx-auto w-full max-w-3xl px-5 pt-5 md:px-8 md:pt-7">
       <header class="mb-5 md:mb-6">
-        <p class="text-[11px] uppercase tracking-[0.26em] text-slate-500">DynaComware AI</p>
-        <h1 class="mt-1.5 text-[1.65rem] font-semibold leading-tight text-slate-900 md:text-3xl">
-          華康字體智慧顧問
+        <p class="text-[11px] uppercase tracking-[0.26em] text-slate-500">
+          DynaComware AI
+        </p>
+        <h1
+          class="mt-1.5 text-[1.65rem] font-semibold leading-tight text-slate-900 md:text-3xl"
+        >
+          華康字型小精靈
         </h1>
-        <p class="mt-1.5 text-sm text-slate-600">簡單、俐落、直接幫你找到適合的字體方向。</p>
-        <p v-if="modelInfo" class="mt-2 inline-flex rounded-full border border-slate-200 bg-white/70 px-2.5 py-1 text-[11px] text-slate-500 backdrop-blur">
+        <p class="mt-1.5 text-sm text-slate-600">
+          簡單、俐落、直接幫你找到適合的字體方向。
+        </p>
+        <p
+          v-if="modelInfo"
+          class="mt-2 inline-flex rounded-full border border-slate-200 bg-white/70 px-2.5 py-1 text-[11px] text-slate-500 backdrop-blur"
+        >
           Model: {{ modelInfo }}
         </p>
       </header>
@@ -113,7 +139,10 @@ const sendQuickPrompt = (prompt) => {
 
             <div v-else class="space-y-2.5">
               <div v-for="(part, pIndex) in m.parts" :key="pIndex">
-                <div v-if="part.type === 'text' && part.text" class="assistant-bubble">
+                <div
+                  v-if="part.type === 'text' && part.text"
+                  class="assistant-bubble"
+                >
                   {{ part.text }}
                 </div>
 
@@ -162,7 +191,10 @@ const sendQuickPrompt = (prompt) => {
           </article>
         </TransitionGroup>
 
-        <div v-if="isLoading" class="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/80 px-3 py-1.5 text-xs text-slate-600 backdrop-blur">
+        <div
+          v-if="isLoading"
+          class="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/80 px-3 py-1.5 text-xs text-slate-600 backdrop-blur"
+        >
           <span class="loader-dot"></span>
           <span class="loader-dot" style="animation-delay: 0.12s"></span>
           <span class="loader-dot" style="animation-delay: 0.24s"></span>
@@ -171,10 +203,7 @@ const sendQuickPrompt = (prompt) => {
       </section>
     </main>
 
-    <form
-      class="composer-shell"
-      @submit="handleSubmit"
-    >
+    <form class="composer-shell" @submit="handleSubmit">
       <div class="mb-2 flex flex-wrap gap-1.5">
         <button
           v-for="prompt in quickPrompts"
@@ -219,8 +248,16 @@ const sendQuickPrompt = (prompt) => {
   inset: 0;
   z-index: -3;
   background:
-    radial-gradient(circle at 20% 10%, rgba(15, 118, 110, 0.1), transparent 36%),
-    radial-gradient(circle at 78% 18%, rgba(56, 92, 255, 0.08), transparent 34%),
+    radial-gradient(
+      circle at 20% 10%,
+      rgba(15, 118, 110, 0.1),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 78% 18%,
+      rgba(56, 92, 255, 0.08),
+      transparent 34%
+    ),
     linear-gradient(160deg, #f8fafc 0%, #eef2f7 55%, #e5ebf2 100%);
 }
 
