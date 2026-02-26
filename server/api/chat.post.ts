@@ -9,6 +9,7 @@ import {
   type UIMessage,
 } from "ai";
 import { z } from "zod";
+import { buildFontDatabasePrompt, dynaFonts } from "../data/fonts";
 
 /**
  * 字體推薦工具的參數 schema
@@ -19,7 +20,9 @@ const fontCardSchema = zodSchema(
   z.object({
     name: z
       .string()
-      .describe("華康字體的完整名稱，例如：華康威風體、華康金剛黑、華康儷宋體"),
+      .describe(
+        "華康字體的完整名稱，例如：華康金剛黑、華康少女文字、華康勘亭流",
+      ),
     description: z
       .string()
       .describe("推薦理由，說明為什麼這款字體適合使用者的設計情境"),
@@ -114,13 +117,9 @@ export default defineEventHandler(async (event) => {
 - 用輕鬆幽默的方式婉拒，然後轉回字體
 - 例如：「哈哈，我瘋掉，太難 😆 我的專長是幫你挑字體！來聊聊你最近有什麼設計案吧？」
 
-## 華康字體資料庫
+## 華康字體資料庫（共 ${dynaFonts.length} 款）
 
-- 華康金剛黑：極粗筆畫、方正剛硬、視覺衝擊力強。適合：電影海報、運動品牌、遊戲標題、力量感場景
-- 華康威風體：厚重霸氣、帶有書法韻味的粗體。適合：活動主視覺、節慶標題、氣勢磅礡的場景
-- 華康儷宋體：典雅端莊、結構工整、清晰易讀。適合：書籍內文、正式文件、品牌識別、文藝風格
-- 華康少女文字：圓潤可愛、手寫風格、輕鬆活潑。適合：兒童商品、甜點店、手帳風設計、少女風格
-- 華康手札體：自然隨性、手寫質感、溫暖親切。適合：文青風設計、咖啡店、旅遊日誌、個人品牌
+${buildFontDatabasePrompt()}
 
 ## 推薦規則
 - 只在使用者有明確設計需求時，才呼叫 show_font_card 工具
