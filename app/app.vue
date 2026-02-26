@@ -89,7 +89,10 @@ const sendQuickPrompt = (prompt) => {
 </script>
 
 <template>
-  <div class="relative min-h-screen text-slate-900">
+  <div
+    class="relative min-h-screen text-slate-900"
+    style="font-family: &quot;Inter&quot;, &quot;Noto Sans TC&quot;, sans-serif"
+  >
     <div class="bg-layer"></div>
     <div class="orb orb-top"></div>
     <div class="orb orb-bottom"></div>
